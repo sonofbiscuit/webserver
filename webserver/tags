@@ -1,0 +1,110 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DEBUG	log.h	/^        DEBUG = 1;$/;"	e	enum:webserver::LogLevel::Level
+ERROE	log.h	/^        ERROE = 4;$/;"	e	enum:webserver::LogLevel::Level
+FATAL	log.h	/^        FATAL = 5;$/;"	e	enum:webserver::LogLevel::Level
+FileLogAppender	log.h	/^class FileLogAppender : public LogAppender{$/;"	c	namespace:webserver	inherits:LogAppender
+INFO	log.h	/^        INFO = 2;$/;"	e	enum:webserver::LogLevel::Level
+Level	log.h	/^    enum Level {$/;"	g	class:webserver::LogLevel	access:public
+LogAppender	log.h	/^    LogAppender();$/;"	p	class:webserver::LogAppender	access:public	signature:()
+LogAppender	log.h	/^class LogAppender{$/;"	c	namespace:webserver
+LogEvent	log.h	/^    LogEvent();$/;"	p	class:webserver::LogEvent	access:public	signature:()
+LogEvent	log.h	/^class LogEvent{   \/\/ 使每次输出logger变为一个event$/;"	c	namespace:webserver
+LogFormatter	log.h	/^class LogFormatter{$/;"	c	namespace:webserver
+LogLevel	log.h	/^class LogLevel{$/;"	c	namespace:webserver
+Logger	log.cc	/^Logger(const std::string& name = "root")$/;"	f	namespace:webserver	signature:(const std::string& name = �)
+Logger	log.h	/^    Logger(const std::string& name = "root");$/;"	p	class:webserver::Logger	access:public	signature:(const std::string& name = �)
+Logger	log.h	/^class Logger{$/;"	c	namespace:webserver
+StdoutLogAppender	log.h	/^class StdoutLogAppender : public LogAppender{$/;"	c	namespace:webserver	inherits:LogAppender
+WARN	log.h	/^        WARN = 3;$/;"	e	enum:webserver::LogLevel::Level
+addAppender	log.h	/^    void addAppender(LogAppender::ptr appender);$/;"	p	class:webserver::Logger	access:public	signature:(LogAppender::ptr appender)
+debug	log.cc	/^void Logger::debug(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+debug	log.h	/^    void debug(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+delAppender	log.h	/^    void delAppender(LogAppender::ptr appender);$/;"	p	class:webserver::Logger	access:public	signature:(LogAppender::ptr appender)
+error	log.cc	/^void Logger::error(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+error	log.h	/^    void error(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+fatal	log.cc	/^void Logger::fatal(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+fatal	log.h	/^    void fatal(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+foramt	log.h	/^    std::string foramt(LogEvent::ptr event);    \/\/把event存为一个string，给Appender输出$/;"	p	class:webserver::LogFormatter	access:public	signature:(LogEvent::ptr event)
+getLevel	log.h	/^    LogLevel::Level getLevel() const {return m_level;}$/;"	f	class:webserver::Logger	access:public	signature:() const
+info	log.cc	/^void Logger::info(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+info	log.h	/^    void info(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+level	log.h	/^    LogLevel::Level level;   \/\/定义日志器的级别,满足这个级别的才会被记录$/;"	m	class:webserver::Logger	access:private
+log	log.cc	/^void Logger::log(LogLevel::Level level, LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogLevel::Level level, LogEvent::ptr event)
+log	log.h	/^    void log(LogLevel::Level level, LogEvent::ptr event);$/;"	p	class:webserver::LogAppender	access:public	signature:(LogLevel::Level level, LogEvent::ptr event)
+log	log.h	/^    void log(LogLevel::Level level, LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogLevel::Level level, LogEvent::ptr event)
+m_appenders	log.h	/^    std::list<LogAppender::ptr> m_appenders;       \/\/ Appender集合$/;"	m	class:webserver::Logger	access:private
+m_content	log.h	/^    std::string m_content;   \/\/消息$/;"	m	class:webserver::LogEvent	access:private
+m_elapse	log.h	/^    uint32_t m_elapse  = 0;   \/\/程序从启动开始到现在的毫秒数$/;"	m	class:webserver::LogEvent	access:private
+m_fiberId	log.h	/^    uint32_t m_fiberId = 0;  \/\/协程编号$/;"	m	class:webserver::LogEvent	access:private
+m_fileName	log.h	/^    const char* m_fileName = nullptr;   \/\/文件名$/;"	m	class:webserver::LogEvent	access:private
+m_level	log.h	/^    LogLevel::Level m_level;   \/\/ Appender针对哪些等级的日志$/;"	m	class:webserver::LogAppender	access:private
+m_line	log.h	/^    int32_t m_line = 0;       \/\/行号$/;"	m	class:webserver::LogEvent	access:private
+m_name	log.h	/^    std::string m_name;      \/\/日志名称$/;"	m	class:webserver::Logger	access:private
+m_threadId	log.h	/^    uint32_t m_threadId = 0;  \/\/线程编号$/;"	m	class:webserver::LogEvent	access:private
+m_time	log.h	/^    uint64_t m_time;        \/\/时间戳$/;"	m	class:webserver::LogEvent	access:private
+ptr	log.h	/^    typedef std::shared_pre<Logger> ptr;$/;"	t	class:webserver::Logger	access:public
+ptr	log.h	/^    typedef std::shared_ptr<LogAppender> ptr;$/;"	t	class:webserver::LogAppender	access:public
+ptr	log.h	/^    typedef std::shared_ptr<LogEvent> ptr;$/;"	t	class:webserver::LogEvent	access:public
+ptr	log.h	/^    typedef std::shared_ptr<LogFormatter> ptr;$/;"	t	class:webserver::LogFormatter	access:public
+setLevel	log.h	/^    void setLevel(LogLevel::Level val){ m_level = val; }$/;"	f	class:webserver::Logger	access:public	signature:(LogLevel::Level val)
+warn	log.cc	/^void Logger::warn(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+warn	log.h	/^    void warn(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver	log.cc	/^namespace webserver{$/;"	n	file:
+webserver	log.h	/^namespace webserver{$/;"	n
+webserver::FileLogAppender	log.h	/^class FileLogAppender : public LogAppender{$/;"	c	namespace:webserver	inherits:LogAppender
+webserver::LogAppender	log.h	/^class LogAppender{$/;"	c	namespace:webserver
+webserver::LogAppender::LogAppender	log.h	/^    LogAppender();$/;"	p	class:webserver::LogAppender	access:public	signature:()
+webserver::LogAppender::log	log.h	/^    void log(LogLevel::Level level, LogEvent::ptr event);$/;"	p	class:webserver::LogAppender	access:public	signature:(LogLevel::Level level, LogEvent::ptr event)
+webserver::LogAppender::m_level	log.h	/^    LogLevel::Level m_level;   \/\/ Appender针对哪些等级的日志$/;"	m	class:webserver::LogAppender	access:private
+webserver::LogAppender::ptr	log.h	/^    typedef std::shared_ptr<LogAppender> ptr;$/;"	t	class:webserver::LogAppender	access:public
+webserver::LogAppender::~LogAppender	log.h	/^    virtual ~LogAppender(){}$/;"	f	class:webserver::LogAppender	access:public	signature:()
+webserver::LogEvent	log.h	/^class LogEvent{   \/\/ 使每次输出logger变为一个event$/;"	c	namespace:webserver
+webserver::LogEvent::LogEvent	log.h	/^    LogEvent();$/;"	p	class:webserver::LogEvent	access:public	signature:()
+webserver::LogEvent::m_content	log.h	/^    std::string m_content;   \/\/消息$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_elapse	log.h	/^    uint32_t m_elapse  = 0;   \/\/程序从启动开始到现在的毫秒数$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_fiberId	log.h	/^    uint32_t m_fiberId = 0;  \/\/协程编号$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_fileName	log.h	/^    const char* m_fileName = nullptr;   \/\/文件名$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_line	log.h	/^    int32_t m_line = 0;       \/\/行号$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_threadId	log.h	/^    uint32_t m_threadId = 0;  \/\/线程编号$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::m_time	log.h	/^    uint64_t m_time;        \/\/时间戳$/;"	m	class:webserver::LogEvent	access:private
+webserver::LogEvent::ptr	log.h	/^    typedef std::shared_ptr<LogEvent> ptr;$/;"	t	class:webserver::LogEvent	access:public
+webserver::LogFormatter	log.h	/^class LogFormatter{$/;"	c	namespace:webserver
+webserver::LogFormatter::foramt	log.h	/^    std::string foramt(LogEvent::ptr event);    \/\/把event存为一个string，给Appender输出$/;"	p	class:webserver::LogFormatter	access:public	signature:(LogEvent::ptr event)
+webserver::LogFormatter::ptr	log.h	/^    typedef std::shared_ptr<LogFormatter> ptr;$/;"	t	class:webserver::LogFormatter	access:public
+webserver::LogLevel	log.h	/^class LogLevel{$/;"	c	namespace:webserver
+webserver::LogLevel::DEBUG	log.h	/^        DEBUG = 1;$/;"	e	enum:webserver::LogLevel::Level
+webserver::LogLevel::ERROE	log.h	/^        ERROE = 4;$/;"	e	enum:webserver::LogLevel::Level
+webserver::LogLevel::FATAL	log.h	/^        FATAL = 5;$/;"	e	enum:webserver::LogLevel::Level
+webserver::LogLevel::INFO	log.h	/^        INFO = 2;$/;"	e	enum:webserver::LogLevel::Level
+webserver::LogLevel::Level	log.h	/^    enum Level {$/;"	g	class:webserver::LogLevel	access:public
+webserver::LogLevel::WARN	log.h	/^        WARN = 3;$/;"	e	enum:webserver::LogLevel::Level
+webserver::Logger	log.cc	/^Logger(const std::string& name = "root")$/;"	f	namespace:webserver	signature:(const std::string& name = �)
+webserver::Logger	log.h	/^class Logger{$/;"	c	namespace:webserver
+webserver::Logger::Logger	log.h	/^    Logger(const std::string& name = "root");$/;"	p	class:webserver::Logger	access:public	signature:(const std::string& name = �)
+webserver::Logger::addAppender	log.h	/^    void addAppender(LogAppender::ptr appender);$/;"	p	class:webserver::Logger	access:public	signature:(LogAppender::ptr appender)
+webserver::Logger::debug	log.cc	/^void Logger::debug(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+webserver::Logger::debug	log.h	/^    void debug(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver::Logger::delAppender	log.h	/^    void delAppender(LogAppender::ptr appender);$/;"	p	class:webserver::Logger	access:public	signature:(LogAppender::ptr appender)
+webserver::Logger::error	log.cc	/^void Logger::error(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+webserver::Logger::error	log.h	/^    void error(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver::Logger::fatal	log.cc	/^void Logger::fatal(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+webserver::Logger::fatal	log.h	/^    void fatal(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver::Logger::getLevel	log.h	/^    LogLevel::Level getLevel() const {return m_level;}$/;"	f	class:webserver::Logger	access:public	signature:() const
+webserver::Logger::info	log.cc	/^void Logger::info(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+webserver::Logger::info	log.h	/^    void info(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver::Logger::level	log.h	/^    LogLevel::Level level;   \/\/定义日志器的级别,满足这个级别的才会被记录$/;"	m	class:webserver::Logger	access:private
+webserver::Logger::log	log.cc	/^void Logger::log(LogLevel::Level level, LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogLevel::Level level, LogEvent::ptr event)
+webserver::Logger::log	log.h	/^    void log(LogLevel::Level level, LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogLevel::Level level, LogEvent::ptr event)
+webserver::Logger::m_appenders	log.h	/^    std::list<LogAppender::ptr> m_appenders;       \/\/ Appender集合$/;"	m	class:webserver::Logger	access:private
+webserver::Logger::m_name	log.h	/^    std::string m_name;      \/\/日志名称$/;"	m	class:webserver::Logger	access:private
+webserver::Logger::ptr	log.h	/^    typedef std::shared_pre<Logger> ptr;$/;"	t	class:webserver::Logger	access:public
+webserver::Logger::setLevel	log.h	/^    void setLevel(LogLevel::Level val){ m_level = val; }$/;"	f	class:webserver::Logger	access:public	signature:(LogLevel::Level val)
+webserver::Logger::warn	log.cc	/^void Logger::warn(LogEvent::ptr event){$/;"	f	class:webserver::Logger	signature:(LogEvent::ptr event)
+webserver::Logger::warn	log.h	/^    void warn(LogEvent::ptr event);$/;"	p	class:webserver::Logger	access:public	signature:(LogEvent::ptr event)
+webserver::StdoutLogAppender	log.h	/^class StdoutLogAppender : public LogAppender{$/;"	c	namespace:webserver	inherits:LogAppender
+~LogAppender	log.h	/^    virtual ~LogAppender(){}$/;"	f	class:webserver::LogAppender	access:public	signature:()

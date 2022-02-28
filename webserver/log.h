@@ -1,6 +1,10 @@
 #ifndef __WEBSERVER_LOG_H__
 #define __WEBSERVER_LOG_H_
 
+class ptr;
+
+class ptr;
+
 #include <iostream>
 #include <string>
 #include <list>
@@ -14,6 +18,7 @@
 
 
 namespace webserver {
+    class Logger;
 
 // 日志事件
     class LogEvent {   // 使每次输出logger变为一个event
@@ -72,14 +77,14 @@ namespace webserver {
 
             virtual ~FormatItem() {}; //析构函数采用虚函数，防止内存泄漏，比如在基类中申请内存，那么虚构函数可以释放
             /*
-             * 格式化日至流
+             * 格式化日志流
              * os 日志输出流
              * logger 日志器
              * level 日志等级
              * event 日志事件
              * */
             // 纯虚函数，给个抽象类，提醒必须派生
-            virtual void format(std::ostream os, LogEvent::ptr event) = 0;
+            virtual void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) = 0;
         };
 
     public:
@@ -112,8 +117,7 @@ namespace webserver {
          * level 级别
          * event 事件
          * */
-        std::string format(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);    //把event存为一个string，给Appender输出
-        std::ostream& format(std::ostream &ofs, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);
+        std::string format(LogLevel::Level level, LogEvent::ptr event);    //把event存为一个string，给Appender输出
 
         /*
          * 初始化解析日志模板
@@ -137,7 +141,7 @@ namespace webserver {
 
         virtual ~LogAppender() {}
 
-        virtual void log(LogLevel::Level level, LogEvent::ptr event);
+        virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);
 
         void setFormatter(LogFormatter::ptr val) {
             m_formatter = val;
@@ -152,7 +156,7 @@ namespace webserver {
     class Logger {
     private:
         LogLevel::Level m_level;   //定义日志器的级别,满足这个级别的才会被记录
-        std::string m_name;      //日志名称
+        std::string m_name;      //日志器logger名称
         std::list<LogAppender::ptr> m_appenders;       // Appender集合
     public:
         typedef std::shared_ptr<Logger> ptr;

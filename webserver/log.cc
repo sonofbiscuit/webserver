@@ -75,7 +75,7 @@ namespace webserver {
 
     void FileLogAppender::log(LogLevel::Level level, LogEvent::ptr event) {
         if (level >= m_level) {
-            m_filestream << m_formatter->format(event); // 存为一个string，后续交给appender
+            m_filestream << m_formatter->format(level, event); // 存为一个string，后续交给appender
         }
     }
 
@@ -92,18 +92,13 @@ namespace webserver {
             : m_pattern(pattern) {
     }
 
-    std::string LogFormatter::format(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
+    std::string LogFormatter::format(LogLevel::Level level, LogEvent::ptr event) {
         // 遍历获取pattern
         std::stringstream ss;
         for (auto &a: m_items) {
-            a->format(ss, logger, level, event);
+            a->format(ss, level, event);
         }
         return ss.str(); // return content
-    }
-
-    std::ostream &
-    format(std::ostream &ofs, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
-
     }
 
 
@@ -201,7 +196,7 @@ namespace webserver {
          * %m -- 消息体
          * %p -- level
          * %r -- 启动后运行的时间
-         * %c -- 日志名称
+         * %c -- 日志器logger名称
          * %t -- 线程id
          * %n -- 回车换行
          * %d -- 时间
@@ -209,20 +204,6 @@ namespace webserver {
          * %l -- 行号
          * */
     }
-
-    class MessageFormatItem : public LogFormatter::FormatItem {
-    public:
-        void format(std::ostream os, LogEvent::ptr event) override {
-            os << event->getContent();
-        }
-    };
-
-    class LevelFormatItem : public LogFormatter::FormatItem {
-    public:
-        void format(std::ostream os, LogEvent::ptr event) override{
-            os << event->getContent();
-        }
-    };
 
 
     const char *m_fileName = nullptr;   //文件名
@@ -232,6 +213,35 @@ namespace webserver {
     uint32_t m_fiberId = 0;  //协程编号
     uint64_t m_time;        //时间戳
     std::string m_content;   //消息
+
+    class MessageFormatItem : public LogFormatter::FormatItem {
+    public:
+        void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) override {
+            os << event->getContent();
+        }
+    };
+
+    class LevelFormatItem : public LogFormatter::FormatItem {
+    public:
+        void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) override{
+            os << LogLevel::ToString(level);
+        }
+    };
+
+    class ElapseFormatItem : public LogFormatter::FormatItem {
+    public:
+        void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) override{
+            os << event->getElapse();
+        }
+    };
+
+    // 日志器的名称，formatter拿不到日志器名称，所以在log的时候，直接把logger往下传
+    class ElapseFormatItem : public LogFormatter::FormatItem {
+    public:
+        void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) override{
+            os << event->getElapse();
+        }
+    };
 
 
 

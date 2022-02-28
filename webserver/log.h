@@ -18,7 +18,7 @@ class ptr;
 
 
 namespace webserver {
-    class Logger;
+    class Logger;  // Logger 定义在之后，再写个class方便传参
 
 // 日志事件
     class LogEvent {   // 使每次输出logger变为一个event
@@ -61,11 +61,6 @@ namespace webserver {
 
 //日志格式器, 格式化日志
     class LogFormatter {
-    private:
-        std::string m_pattern;  // 日志格式模板
-        std::vector<FormatItem::ptr> m_items; //日志解析后的格式
-        bool m_error = false;
-
     public:
         // 日志解析的子模块
         /*
@@ -74,7 +69,7 @@ namespace webserver {
         class FormatItem {
         public:
             typedef std::shared_ptr<FormatItem> ptr;
-
+            FormatItem(const std::string& fmt = "") {};
             virtual ~FormatItem() {}; //析构函数采用虚函数，防止内存泄漏，比如在基类中申请内存，那么虚构函数可以释放
             /*
              * 格式化日志流
@@ -84,12 +79,17 @@ namespace webserver {
              * event 日志事件
              * */
             // 纯虚函数，给个抽象类，提醒必须派生
-            virtual void format(std::ostream os, LogLevel::Level level, LogEvent::ptr event) = 0;
-        };
+            // 传logger进来，不然没法获取logger的private
+            virtual void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) = 0;
+    };
+
+    private:
+        std::string m_pattern;  // 日志格式模板
+        std::vector<FormatItem::ptr> m_items; //日志解析后的格式
+        bool m_error = false;
 
     public:
         typedef std::shared_ptr<LogFormatter> ptr;
-
         /*
          * 构造函数
          * @param[in]    pattern 格式模板
@@ -117,13 +117,12 @@ namespace webserver {
          * level 级别
          * event 事件
          * */
-        std::string format(LogLevel::Level level, LogEvent::ptr event);    //把event存为一个string，给Appender输出
+        std::string format(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);    //把event存为一个string，给Appender输出
 
         /*
          * 初始化解析日志模板
          * */
         void inits();
-
         const std::string getFormatter() const { return m_pattern; }
         // getFormatter的返回值不允许被更改
         // 第二个const使得该函数的权限为只读，即无法去改变成员变量的值
@@ -141,7 +140,8 @@ namespace webserver {
 
         virtual ~LogAppender() {}
 
-        virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);
+        // 把logger传到appender，方便后续输出logger的名称，不然没法获取private
+        virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) = 0;
 
         void setFormatter(LogFormatter::ptr val) {
             m_formatter = val;
@@ -153,7 +153,7 @@ namespace webserver {
     };
 
 //日志器
-    class Logger {
+    class Logger : public std::enable_shared_from_this<Logger> {
     private:
         LogLevel::Level m_level;   //定义日志器的级别,满足这个级别的才会被记录
         std::string m_name;      //日志器logger名称
@@ -173,6 +173,8 @@ namespace webserver {
         void delAppender(LogAppender::ptr appender);
         LogLevel::Level getLevel() const { return m_level; }
         void setLevel(LogLevel::Level val) { m_level = val; }
+
+        const std::string& getName() const { return m_name;}
     };
 
 
@@ -181,7 +183,7 @@ namespace webserver {
     public:
         typedef std::shared_ptr<StdoutLogAppender> ptr;
 
-        void log(LogLevel::Level level, LogEvent::ptr event) override;
+        void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override;
     };
 
 
@@ -190,7 +192,7 @@ namespace webserver {
     public:
         typedef std::shared_ptr<FileLogAppender> ptr;
         FileLogAppender(const std::string& filename);
-        void log(LogLevel::Level level, LogEvent::ptr event) override;
+        void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override;
 
         // 判断文件是否打开，已经打开则关闭重新打开,成功返回true
         bool reopen();

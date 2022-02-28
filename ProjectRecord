@@ -1,0 +1,13 @@
+1. ostream 的重载。
+2. 宏定义函数。
+
+3. 流对象是不能复制的。
+    virtual void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) = 0;
+    第一次写的为std::ostream os
+    我在log.cc中使用时，a->format(logger, ss, level, event);
+    报错为：Calling a protected constructor of class 'std::basic_ostream<char>
+    后续修改为 std::ostream& os 才通过
+4. auto self = shared_from_this(); //返回一个当前类的std::shared_ptr
+   shared_from_this 是个模板类，要让使用shared_from_this()的类继承才可使用
+   如 log.h之中的 class Logger : public std::enable_shared_from_this<Logger>
+   我们可通过这种方法来使用智能指针去控制对象的生存周期

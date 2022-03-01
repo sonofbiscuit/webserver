@@ -30,6 +30,7 @@ namespace webserver {
 
     class MessageFormatItem : public LogFormatter::FormatItem {
     public:
+        MessageFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override {
             os << event->getContent();
         }
@@ -37,6 +38,7 @@ namespace webserver {
 
     class LevelFormatItem : public LogFormatter::FormatItem {
     public:
+        LevelFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << LogLevel::ToString(level);
         }
@@ -44,6 +46,7 @@ namespace webserver {
 
     class ElapseFormatItem : public LogFormatter::FormatItem {
     public:
+        ElapseFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << event->getElapse();
         }
@@ -52,6 +55,7 @@ namespace webserver {
     // 日志器的名称，formatter拿不到日志器名称，直接把logger往下传
     class NameFormatItem : public LogFormatter::FormatItem {
     public:
+        NameFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << logger->getName();
         }
@@ -60,6 +64,7 @@ namespace webserver {
     // 线程id
     class ThreadIdFormatItem : public LogFormatter::FormatItem {
     public:
+        ThreadIdFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << event->getThreadId();
         }
@@ -68,6 +73,7 @@ namespace webserver {
     // 协程id
     class FiberIdFormatItem : public LogFormatter::FormatItem {
     public:
+        FiberIdFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << event->getFiberId();
         }
@@ -89,6 +95,7 @@ namespace webserver {
     // 文件名
     class FileNameFormatItem : public LogFormatter::FormatItem {
     public:
+        FileNameFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << event->getFile();
         }
@@ -97,9 +104,33 @@ namespace webserver {
     // 行号
     class LineFormatItem : public LogFormatter::FormatItem {
     public:
+        LineFormatItem(const std::string& str = ""){}
         void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
             os << event->getLine();
         }
+    };
+
+    // 换行符
+    class NewLineFormatItem : public LogFormatter::FormatItem {
+    public:
+        NewLineFormatItem(const std::string& str = ""){}
+        void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
+            os << std::endl;
+        }
+    };
+
+    //string 格式
+    class StringFormatItem : public LogFormatter::FormatItem {
+    public:
+        StringFormatItem(const std::string& str)
+            : FormatItem(str), m_string(str){
+        }
+        void format(std::shared_ptr<Logger> logger, std::ostream& os, LogLevel::Level level, LogEvent::ptr event) override{
+            os << m_string;
+        }
+
+    private:
+        std::string m_string;
     };
 
     Logger::Logger(const std::string &name)
@@ -195,7 +226,7 @@ namespace webserver {
         // 解析日志
         // str, format, type   string，格式，类别
         std::vector<std::tuple<std::string, std::string, int>> vec;
-        std::string nstr; //表示当前的string是什么
+        std::string nstr; // 存取正常的string格式内容，   xxxxx这种   normalstring
         for (size_t i = 0; i < m_pattern.size(); ++i) {
             /*
              * 外层循环遍历整个字符串，直至遇到%
@@ -220,7 +251,9 @@ namespace webserver {
             size_t n = i + 1;
             int formatter_status = 0; // 初始化formatter的状态, 0表示不解析，1表示解析
             size_t formatter_begin = 0; // 记录'{'的位置， n-i-1表示的是括号内的字符长度
-
+            /*
+             * formatter_status 的状态为0， 那么说明存入的就是string类型
+             * */
             std::string str;
             std::string fmt;
             // 根据默认格式来解析
@@ -258,7 +291,7 @@ namespace webserver {
             // m_pattern 遍历完了，且未遇到括号{}，遇到'{' status=1，右括号'}'status=2
             if (formatter_status == 0) {
                 if (!nstr.empty()) { // 非空
-                    vec.emplace_back(std::make_tuple(nstr, "", 0));
+                    vec.emplace_back(std::make_tuple(nstr, "", 0));   // normalstring状态码记为0
                 }
                 //nstr为空
                 str = m_pattern.substr(i + 1, n - i - 1);
@@ -280,10 +313,7 @@ namespace webserver {
             vec.emplace_back(std::make_tuple(nstr, "", 0));
         }
 
-        // 给个映射关系,string -> function
-        static std::map <std::string, std::function<FormatItem::ptr(const std::string& str)>> s_foramt_items = {
-                {"m", [](const std::string& fmt) {return } }
-        };
+        // 给个映射关系,string -> function, function的返回值是 FormatItem::ptr 以对应不同class
         /*
          * %m -- 消息体
          * %p -- level
@@ -295,8 +325,43 @@ namespace webserver {
          * %f -- 文件名
          * %l -- 行号
          * */
-    }
+        static std::map <std::string, std::function<FormatItem::ptr(const std::string& fmt)>> s_format_items = {
+            #define XX(str,C) \
+                {#str, [](const std::string& fmt) {return FormatItem::ptr(new C(fmt));} }
 
+                XX(m, MessageFormatItem),
+                XX(p, LevelFormatItem),
+                XX(r, ElapseFormatItem),
+                XX(c, NameFormatItem),
+                XX(t, ThreadIdFormatItem),
+                //  XX(m, FiberIdFormatItem),
+                XX(n, NewLineFormatItem),
+                XX(d, DataTimeFormatItem),
+                XX(f, FileNameFormatItem),
+                XX(l, LineFormatItem),
+        };
+
+        for(auto& i : vec){   // @param : str, 格式， 类别
+            if(std::get<2>(i) == 0){   // normal string
+                m_items.emplace_back(FormatItem::ptr(new StringFormatItem(std::get<0>(i))));
+            }else{   //%xxx   和 %%xxx 转义
+                auto it = std::get<1>(i);
+                auto fd = s_format_items.find(it);
+                if(fd != s_format_items.end()){  //找到对应格式
+                    m_items.emplace_back(FormatItem::ptr(fd->second(std::get<1>(i))));
+                    // fd->second 为 std::function<FormatItem::ptr(const std::string& fmt)>
+                    // 传个参数  std::get<1>(i)  以获得对应格式
+                }else{ //未知格式
+                    m_items.emplace_back(FormatItem::ptr(new StringFormatItem("<< error format %" + std::get<1>(i) + ">>")));
+                    m_error = true;
+                }
+            }
+
+            // debug
+            std::cout << std::get<0>(i) << " - " << std::get<1>(i) << " - " << std::get<2>(i) <<std::endl;
+        }
+
+    }
 
     const char *m_fileName = nullptr;   //文件名
     int32_t m_line = 0;       //行号

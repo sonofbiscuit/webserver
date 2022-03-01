@@ -85,7 +85,7 @@ namespace webserver {
 
     private:
         std::string m_pattern;  // 日志格式模板
-        std::vector<FormatItem::ptr> m_items; //日志解析后的格式
+        std::vector<FormatItem::ptr> m_items; //日志解析后所获得的格式
         bool m_error = false;
 
     public:

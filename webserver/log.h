@@ -29,10 +29,18 @@ namespace webserver {
         uint32_t m_threadId = 0;  //线程编号
         uint32_t m_fiberId = 0;  //协程编号
         uint64_t m_time;        //时间戳
-        std::string m_content;   //消息
+        std::stringstream m_ss;   //消息
     public:
         typedef std::shared_ptr<LogEvent> ptr;
-        LogEvent();
+        LogEvent(const char* filename, int32_t line, uint32_t elapse,
+                uint32_t threadid, uint32_t fiberid, uint64_t time)
+            : m_filename(filename)
+            , m_line(line)
+            , m_elapse(elapse)
+            , m_threadId(threadid)
+            , m_fiberId(fiberid)
+            , m_time(time){
+        }
 
         const char* getFile() const {return m_fileName;}
         int32_t getLine() const {return m_line;}
@@ -40,7 +48,8 @@ namespace webserver {
         uint32_t getThreadId() const {return m_threadId;}
         uint32_t getFiberId() const {return m_fiberId;}
         uint64_t getTime() const {return m_time;}
-        const std::string getContent() const {return m_content;}
+        std::string getContent() const {return m_ss_str();}
+        const std::stringstream& getSS() {return m_ss;} 
     };
 
 // 日志级别

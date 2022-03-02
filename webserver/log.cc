@@ -134,10 +134,16 @@ namespace webserver {
     };
 
     Logger::Logger(const std::string &name)
-            : m_name(name) {
+            : m_name(name)
+            , m_level(LogLevel::DEBUG) () {
+        // 初始化个formatter， 比如有时候appender不需要formatter，直接使用logformatter
+        m_formatter.reset(new LogFormatter("%d [%p] %f %l %m %n"));
     }
 
     void Logger::addAppender(LogAppender::ptr appender) {
+        if(!appender->getFormatter){  // 如果没有formatter，那么设置为默认
+            appender->setFormatter(m_formatter);
+        }
         m_appenders.push_back(appender);
     }
 
@@ -277,7 +283,7 @@ namespace webserver {
                                                n - formatter_begin - 1); //获取{}内的所有内容，formatter_begin记录的是‘{’位置
                         formatter_status = 2;
                         ++n;
-                        continue;
+                        break;
                     }
                 }
                 /*++n;
@@ -292,6 +298,7 @@ namespace webserver {
             if (formatter_status == 0) {
                 if (!nstr.empty()) { // 非空
                     vec.emplace_back(std::make_tuple(nstr, "", 0));   // normalstring状态码记为0
+                    nstr.clear();
                 }
                 //nstr为空
                 str = m_pattern.substr(i + 1, n - i - 1);
@@ -304,6 +311,7 @@ namespace webserver {
             } else if (formatter_status == 2) {
                 if (!nstr.empty()) { // 非空
                     vec.emplace_back(std::make_tuple(nstr, "", 0));
+                    nstr.clear();
                 }
                 vec.emplace_back(std::make_tuple(str, fmt, 1));
                 i = n;
